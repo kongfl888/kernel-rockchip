@@ -1,0 +1,50 @@
+# [K] (c) 2020
+
+name: Merge-upstream
+
+on:
+  push:
+    paths:
+      - '.github/workflows/Merge-upstream.yml'
+  schedule:
+    - cron: '10 */8 * * *'
+  watch:
+    types:
+      - 'started'
+
+jobs:
+  merge:
+
+    runs-on: ubuntu-latest
+    if: github.repository == 'kongfl888/kernel-rockchip'
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@master
+      with:
+        ref: test
+        fetch-depth: 0
+        lfs: true
+
+    - name: Set git identity
+      run : |
+        git config --global user.email "kongfl888@outlook.com"
+        git config --global user.name "kongfl888"
+    - name: Load upstream commits
+      run:  |
+        rm -rf ./.git
+        git clone -b nanopi-r2-v5.4.y --single-branch https://github.com/kongfl888/kernel-rockchip.git
+        cd kernel-rockchip
+        git checkout nanopi-r2-v5.4.y
+        git remote add friendlyarm https://github.com/friendlyarm/kernel-rockchip.git
+        git fetch friendlyarm nanopi-r2-v5.4.y
+        git reset --hard friendlyarm/nanopi-r2-v5.4.y
+        git remote add upstream https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+        git fetch upstream linux-5.4.y
+        git rebase upstream/linux-5.4.y
+    - name: Push Commits
+      env:
+        DOWNSTREAM_BRANCH: nanopi-r2-v5.4.y
+      run:  |
+        cd kernel-rockchip
+        git push --force-with-lease origin $DOWNSTREAM_BRANCH
