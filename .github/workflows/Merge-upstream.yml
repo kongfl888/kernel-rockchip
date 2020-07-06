@@ -4,6 +4,8 @@ name: Merge-upstream
 
 on:
   push:
+    branches:
+      - test
     paths:
       - '.github/workflows/Merge-upstream.yml'
   schedule:
@@ -22,7 +24,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
       with:
-        ref: test
+        ref: nanopi-r2-v5.4.y
         fetch-depth: 0
         lfs: true
 
@@ -32,9 +34,6 @@ jobs:
         git config --global user.name "kongfl888"
     - name: Load upstream commits
       run:  |
-        rm -rf ./.git
-        git clone -b nanopi-r2-v5.4.y --single-branch https://github.com/kongfl888/kernel-rockchip.git
-        cd kernel-rockchip
         git checkout nanopi-r2-v5.4.y
         git remote add friendlyarm https://github.com/friendlyarm/kernel-rockchip.git
         git fetch friendlyarm nanopi-r2-v5.4.y
@@ -46,5 +45,4 @@ jobs:
       env:
         DOWNSTREAM_BRANCH: nanopi-r2-v5.4.y
       run:  |
-        cd kernel-rockchip
         git push --force-with-lease origin $DOWNSTREAM_BRANCH
