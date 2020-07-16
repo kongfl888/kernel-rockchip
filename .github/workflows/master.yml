@@ -7,9 +7,7 @@ on:
     branches:
       - test
     paths:
-      - '.github/workflows/Merge-upstream.yml'
-  schedule:
-    - cron: '10 */8 * * *'
+      - '.github/workflows/master.yml'
 
 jobs:
   merge:
@@ -21,7 +19,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
       with:
-        ref: nanopi-r2-v5.4.y
+        ref: test
         fetch-depth: 0
         lfs: true
 
@@ -31,15 +29,11 @@ jobs:
         git config --global user.name "kongfl888"
     - name: Load upstream commits
       run:  |
-        git checkout nanopi-r2-v5.4.y
-        git remote add friendlyarm https://github.com/friendlyarm/kernel-rockchip.git
-        git fetch friendlyarm nanopi-r2-v5.4.y
-        git reset --hard friendlyarm/nanopi-r2-v5.4.y
-        git remote add upstream https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-        git fetch upstream linux-5.4.y
-        git rebase upstream/linux-5.4.y
+        git remote add rockchip https://github.com/rockchip-linux/kernel.git
+        git fetch rockchip develop-4.4
+        git checkout -b develop-4.4 rockchip/develop-4.4
     - name: Push Commits
       env:
-        DOWNSTREAM_BRANCH: nanopi-r2-v5.4.y
+        DOWNSTREAM_BRANCH: develop-4.4
       run:  |
         git push --force-with-lease origin $DOWNSTREAM_BRANCH
