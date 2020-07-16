@@ -16,14 +16,17 @@ jobs:
     if: github.repository == 'kongfl888/kernel-rockchip'
     steps:
 
+    - name: Checkout
+      uses: actions/checkout@master
+      with:
+        ref: test
+
     - name: Set git identity
       run : |
         git config --global user.email "kongfl888@outlook.com"
         git config --global user.name "kongfl888"
     - name: Git Init
       run:  |
-        git init
-        git remote add origin https://github.com/kongfl888/kernel-rockchip.git
         git remote add rockchip https://github.com/rockchip-linux/kernel.git
         git fetch rockchip develop-4.4
         git checkout -b develop-4.4 rockchip/develop-4.4
