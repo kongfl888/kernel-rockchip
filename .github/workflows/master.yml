@@ -10,7 +10,7 @@ on:
       - '.github/workflows/master.yml'
 
 jobs:
-  creat:
+  create:
 
     runs-on: ubuntu-latest
     if: github.repository == 'kongfl888/kernel-rockchip'
@@ -20,8 +20,10 @@ jobs:
       run : |
         git config --global user.email "kongfl888@outlook.com"
         git config --global user.name "kongfl888"
-    - name: Load upstream commits
+    - name: Git Init
       run:  |
+        git init
+        git remote add origin https://github.com/kongfl888/kernel-rockchip.git
         git remote add rockchip https://github.com/rockchip-linux/kernel.git
         git fetch rockchip develop-4.4
         git checkout -b develop-4.4 rockchip/develop-4.4
