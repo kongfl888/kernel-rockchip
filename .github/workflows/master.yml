@@ -10,18 +10,11 @@ on:
       - '.github/workflows/master.yml'
 
 jobs:
-  merge:
+  creat:
 
     runs-on: ubuntu-latest
     if: github.repository == 'kongfl888/kernel-rockchip'
     steps:
-
-    - name: Checkout
-      uses: actions/checkout@master
-      with:
-        ref: test
-        fetch-depth: 0
-        lfs: true
 
     - name: Set git identity
       run : |
