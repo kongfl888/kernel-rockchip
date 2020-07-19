@@ -38,6 +38,13 @@ jobs:
         git remote add upstream https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
         git fetch upstream linux-5.4.y
         git rebase upstream/linux-5.4.y
+    - name: Patch
+      run:  |
+        git checkout test
+        cp -rf patches-5.4 /tmp
+        git checkout nanopi-r2-v5.4.y
+        git am /tmp/patches-5.4/*.patch
+
     - name: Push Commits
       env:
         DOWNSTREAM_BRANCH: nanopi-r2-v5.4.y
