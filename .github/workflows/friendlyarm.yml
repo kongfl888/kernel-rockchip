@@ -1,0 +1,37 @@
+# [K] (c) 2020
+
+name: TEST 2
+
+on:
+  push:
+    branches:
+      - test
+    paths:
+      - '.github/workflows/friendlyarm.yml'
+
+jobs:
+  create:
+
+    runs-on: ubuntu-latest
+    if: github.repository == 'kongfl888/kernel-rockchip'
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@master
+      with:
+        ref: test
+
+    - name: Set git identity
+      run : |
+        git config --global user.email "kongfl888@outlook.com"
+        git config --global user.name "kongfl888"
+    - name: Git Init
+      run:  |
+        git remote add friendlyarm https://github.com/friendlyarm/kernel-rockchip.git
+        git fetch friendlyarm nanopi-r2-v5.4.y
+        git checkout -b friendlyarm-nanopi-r2-v5.4.y friendlyarm/nanopi-r2-v5.4.y
+    - name: Push Commits
+      env:
+        DOWNSTREAM_BRANCH: friendlyarm-nanopi-r2-v5.4.y
+      run:  |
+        git push --force-with-lease origin $DOWNSTREAM_BRANCH
