@@ -1,0 +1,47 @@
+# [K] (c) 2020
+
+name: TEST
+
+on:
+  schedule:
+    - cron: '10 */8 * * *'
+
+jobs:
+  merge:
+
+    runs-on: ubuntu-latest
+    if: github.repository == 'kongfl888/kernel-rockchip'
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@main
+      with:
+        ref: nanopi-r2-v5.4.y
+        fetch-depth: 0
+        lfs: true
+
+    - name: Set git identity
+      run : |
+        git config --global user.email "kongfl888@outlook.com"
+        git config --global user.name "kongfl888"
+    - name: Load upstream commits
+      run:  |
+        git checkout nanopi-r2-v5.4.y
+        git remote add friendlyarm https://github.com/friendlyarm/kernel-rockchip.git
+        git fetch friendlyarm nanopi-r2-v5.4.y
+        git reset --hard friendlyarm/nanopi-r2-v5.4.y
+        git remote add upstream https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+        git fetch upstream linux-5.4.y
+        git rebase upstream/linux-5.4.y
+    - name: Patch
+      run:  |
+        git checkout test
+        cp -rf patches-5.4 /tmp
+        git checkout nanopi-r2-v5.4.y
+        git am /tmp/patches-5.4/*.patch
+
+    - name: Push Commits
+      env:
+        DOWNSTREAM_BRANCH: nanopi-r2-v5.4.y
+      run:  |
+        git push --force-with-lease origin $DOWNSTREAM_BRANCH
