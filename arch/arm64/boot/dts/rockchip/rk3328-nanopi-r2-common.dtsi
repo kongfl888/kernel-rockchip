@@ -92,6 +92,7 @@
 		regulator-name = "vcc_sd";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
 		vin-supply = <&vcc_io>;
 	};
 
