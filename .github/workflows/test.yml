@@ -37,8 +37,10 @@ jobs:
       run:  |
         git checkout test
         cp -rf patches-5.4 /tmp
+        cp -rf scripts /tmp
         git checkout nanopi-r2-v5.4.y
         git am /tmp/patches-5.4/*.patch
+        . /tmp/scripts/add_fullconenat.sh
 
     - name: Push Commits
       env:
